@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Finance</title>
+    </head>
+    <body>
+        <div>
+            <h4>Pemberitahuan barang masuk</h4>
+            <div id="notif"></div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js" integrity="sha512-oFOCo2/3DtjrJG4N27BjSLQWoiBv171sK6a+JiWjp/7agxC2nCUP358AqzxkBUb5jX8g6CYLPdSKQTbC0weCwA==" crossorigin="anonymous"></script>
+        <script type="text/javascript" charset="utf-8">
+            $(function(e) {
+                var socket = io.connect('http://localhost:5001/kafka');
+                
+                socket.on('connect', function() {
+                    console.log("in connect")
+                    socket.emit('startback', 'start')
+                });
+
+                socket.on('response', function(msg) {
+                    console.log("in response", msg)
+                    $("#notif").prepend(`<div style="background-color: grey;color: white;width:300px;padding:5px;border-radius: 10px;margin-bottom:10px">
+                        <p>No Order : ${msg["No invoice"]}</p>
+                        <p>Merk : ${msg.merk}</p>
+                        <p>Harga : ${msg.harga}</p>
+                        <p>Qty : ${msg.qty}</p>
+                        <p>Total : ${msg.total}</p>
+                    </div>`)
+                });
+            });
+        </script>
+    </body>
+</html>
